@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>代码编辑器</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div class="editor-container">
+    <div class="code-column">
+        <div class="code-row">
+            <textarea id="code1" class="code-box" placeholder="在此输入代码"></textarea>
+            <button onclick="runCode(1)">运行</button>
+        </div>
+        <div class="code-row">
+            <textarea id="code2" class="code-box" placeholder="在此输入代码"></textarea>
+            <button onclick="runCode(2)">运行</button>
+        </div>
+        <div class="code-row">
+            <textarea id="code3" class="code-box" placeholder="在此输入代码"></textarea>
+            <button onclick="runCode(3)">运行</button>
+        </div>
+        <div class="code-row">
+            <textarea id="code4" class="code-box" placeholder="在此输入代码"></textarea>
+            <button onclick="runCode(4)">运行</button>
+        </div>
+        <div class="code-row">
+            <textarea id="code5" class="code-box" placeholder="在此输入代码"></textarea>
+            <button onclick="runCode(5)">运行</button>
+        </div>
+    </div>
+    <div class="splitter" onmousedown="startDrag(event)"></div>
+    <div class="result-column">
+        <textarea id="result1" class="result-box" placeholder="结果将显示在这里" readonly></textarea>
+        <textarea id="result2" class="result-box" placeholder="结果将显示在这里" readonly></textarea>
+        <textarea id="result3" class="result-box" placeholder="结果将显示在这里" readonly></textarea>
+        <textarea id="result4" class="result-box" placeholder="结果将显示在这里" readonly></textarea>
+        <textarea id="result5" class="result-box" placeholder="结果将显示在这里" readonly></textarea>
+    </div>
+</div>
+
+<script>
+    let isDragging = false;
+    let startX;
+    let startWidth;
+
+    function startDrag(e) {
+        isDragging = true;
+        startX = e.clientX;
+        startWidth = document.querySelector('.code-column').offsetWidth;
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', stopDrag);
+    }
+
+    function drag(e) {
+        if (isDragging) {
+            const dx = e.clientX - startX;
+            const newWidth = startWidth + dx;
+            document.querySelector('.code-column').style.width = `${newWidth}px`;
+            document.querySelector('.result-column').style.width = `calc(100% - ${newWidth}px)`;
+        }
+    }
+
+    function stopDrag() {
+        isDragging = false;
+        document.removeEventListener('mousemove', drag);
+        document.removeEventListener('mouseup', stopDrag);
+    }
+
+    function runCode(id) {
+        const code = document.getElementById(`code${id}`).value;
+        try {
+            // 这里假设你有一个函数来执行代码并返回结果
+            const result = executeCode(code);
+            document.getElementById(`result${id}`).value = result;
+        } catch (error) {
+            document.getElementById(`result${id}`).value = `错误: ${error.message}`;
+        }
+    }
+
+    function executeCode(code) {
+        // 这里你需要实现代码执行的逻辑
+        // 例如，使用eval来执行代码（注意安全性）
+        // 为了演示，这里简单返回输入的代码
+        return code;
+    }
+</script>
+</body>
+</html>
