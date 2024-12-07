@@ -1,0 +1,167 @@
+<div class="editor-container">
+    <div class="code-column">
+        <div class="code-row">
+            <h2>一、前期工作</h2>
+            <h3>1.设置GPU</h3>
+            <div class="code-with-label">
+                <span class="code-label">In[1]</span>
+                <pre class="original-code" id="originalCode1">import tensorflow as tf
+gpus = tf.config.list_physical_devices("GPU")
+
+if gpus:
+    tf.config.experimental.set_memory_growth(gpus[0], True)  # 设置GPU显存用量按需使用
+    tf.config.set_visible_devices([gpus[0]], "GPU")
+
+# 打印显卡信息，确认GPU可用
+print(gpus)</pre>
+            </div>
+            <textarea id="code1" class="code-box" placeholder="在此输入代码"></textarea>
+            <div class="button-container">
+                <button onclick="runCode(1)">运行</button>
+            </div>
+            <div class="result-column">
+                <textarea id="result1" class="result-box" placeholder="结果将显示在这里" readonly></textarea>
+            </div>
+        </div>
+        <div class="code-row">
+            <h3>2.导入数据</h3>
+            <div class="code-with-label">
+                <span class="code-label">In[2]</span>
+                <pre class="original-code" id="originalCode2"><code>function add(a, b) {\n    return a + b;\n}</code></pre>
+
+            </div>
+            <textarea id="code2" class="code-box" placeholder="在此输入代码"></textarea>
+            <div class="button-container">
+                <button onclick="runCode(2)">运行</button>
+            </div>
+            <div class="result-column">
+                <textarea id="result2" class="result-box" placeholder="结果将显示在这里" readonly></textarea>
+            </div>
+        </div>
+        <div class="code-row">
+            <h3>3.查看数据</h3>
+            <pre class="original-code" id="originalCode3">function add(a, b) {\n    return a - b;\n}</pre>
+            <textarea id="code3" class="code-box" placeholder="在此输入代码"></textarea>
+            <div class="button-container">
+                <button onclick="runCode(3)">运行</button>
+            </div>
+            <div class="result-column">
+                <textarea id="result3" class="result-box" placeholder="结果将显示在这里" readonly></textarea>
+            </div>
+        </div>
+        <div class="code-row">
+            <h2>二、数据预处理</h2>
+            <h3>1.加载数据</h3>
+            <pre class="original-code" id="originalCode4">function add(a, b) {\n    return a + b;\n}</pre>
+            <textarea id="code4" class="code-box" placeholder="在此输入代码"></textarea>
+            <div class="button-container">
+                <button onclick="runCode(4)">运行</button>
+            </div>
+            <div class="result-column">
+                <textarea id="result4" class="result-box" placeholder="结果将显示在这里" readonly></textarea>
+            </div>
+        </div>
+        <div class="code-row">
+            <pre class="original-code" id="originalCode5">function add(a, b) {\n    return a + b;\n}</pre>
+            <textarea id="code5" class="code-box" placeholder="在此输入代码"></textarea>
+            <div class="button-container">
+                <button onclick="runCode(5)">运行</button>
+            </div>
+            <div class="result-column">
+                <textarea id="result5" class="result-box" placeholder="结果将显示在这里" readonly></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    let isDragging = false;
+    let startX;
+    let startWidth;
+
+    function startDrag(e) {
+        isDragging = true;
+        startX = e.clientX;
+        startWidth = document.querySelector('.code-column').offsetWidth;
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', stopDrag);
+    }
+
+    function drag(e) {
+        if (isDragging) {
+            const dx = e.clientX - startX;
+            const newWidth = startWidth + dx;
+            document.querySelector('.code-column').style.width = `${newWidth}px`;
+            document.querySelector('.result-column').style.width = `calc(100% - ${newWidth}px)`;
+        }
+    }
+
+    function stopDrag() {
+        isDragging = false;
+        document.removeEventListener('mousemove', drag);
+        document.removeEventListener('mouseup', stopDrag);
+    }
+
+    // 预设的源代码
+    const sourceCodes = [
+        `import tensorflow as tf
+gpus = tf.config.list_physical_devices("GPU")
+
+if gpus:
+    tf.config.experimental.set_memory_growth(gpus[0], True)  # 设置GPU显存用量按需使用
+    tf.config.set_visible_devices([gpus[0]], "GPU")
+
+# 打印显卡信息，确认GPU可用
+print(gpus)`,
+        `function subtract(a, b) {\n    return a - b;\n}`,
+        `function multiply(a, b) {\n    return a * b;\n}`,
+        `function divide(a, b) {\n    if (b === 0) throw new Error("除数不能为零");\n    return a / b;\n}`,
+        `function power(a, b) {\n    return Math.pow(a, b);\n}`
+    ];
+
+    sourceCodes.forEach((code, index) => {
+        document.getElementById(`originalCode${index + 1}`).textContent = code;
+    });
+
+    function runCode(id) {
+        const code = document.getElementById(`code${id}`).value;
+        const originalCode = document.getElementById(`originalCode${id}`).textContent;
+        if (code.trim() !== originalCode.trim()) {
+            document.getElementById(`result${id}`).value = "输入代码有误";
+            return;
+        }
+        try {
+            // 调用后端接口
+            fetch('/runCode', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    code: code,
+                    id: id,
+                    batch: 'batch_' + id // 假设你需要一个 batch 字段
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // 假设后端返回的结果是一个图片 URL
+                    document.getElementById(`result${id}`).value = `结果: 图片 URL - ${data.graph}`;
+                    // 如果你需要在页面上显示图片，可以使用 img 标签
+                    const img = document.createElement('img');
+                    img.src = data.graph;
+                    img.style.width = '100%';
+                    img.style.height = 'auto';
+                    document.getElementById(`result${id}`).innerHTML = '';
+                    document.getElementById(`result${id}`).appendChild(img);
+                })
+                .catch(error => {
+                    document.getElementById(`result${id}`).value = `错误: ${error.message}`;
+                });
+        } catch (error) {
+            document.getElementById(`result${id}`).value = `错误: ${error.message}`;
+        }
+    }
+</script>

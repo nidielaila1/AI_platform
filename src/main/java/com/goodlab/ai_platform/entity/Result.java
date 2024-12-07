@@ -1,13 +1,12 @@
 package com.goodlab.ai_platform.entity;
 
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
-
-
+@Entity
+@Table(name = "results")
 public class Result {
 
     @Id
@@ -15,12 +14,12 @@ public class Result {
     private String batch;
     private String graph;
 
-    public String getGraph() {
-        return graph;
+    public int getId() {
+        return id;
     }
 
-    public void setGraph(String graph) {
-        this.graph = graph;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getBatch() {
@@ -31,11 +30,11 @@ public class Result {
         this.batch = batch;
     }
 
-    public int getId() {
-        return id;
+    public String getGraph() {
+        return graph;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setGraph(String graph) {
+        this.graph = graph;
     }
 }

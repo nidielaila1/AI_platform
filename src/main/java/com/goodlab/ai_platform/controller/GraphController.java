@@ -1,3 +1,6 @@
+
+
+
 package com.goodlab.ai_platform.controller;
 
 import com.goodlab.ai_platform.entity.CodeRequest;
@@ -20,17 +23,16 @@ public class GraphController {
         int id = request.getId();
         String batch = request.getBatch(); // 添加对 batch 字段的获取
 
-            // 这里假设你有一个函数来执行代码并返回结果
-            String result = executeCode(code);
+        // 这里假设你有一个函数来执行代码并返回结果
+        String result = executeCode(code);
 
-            // 将结果存储到数据库
-            Result codeExecutionResult = new Result();
-            codeExecutionResult.setId(id);
-            codeExecutionResult.setBatch(batch);
-            codeExecutionResult.setGraph(result); // 假设 graph 存储执行结果
-            codeExecutionService.saveResult(codeExecutionResult);
+        // 将结果存储到数据库（这里不需要）
+        Result codeExecutionResult = new Result();
+        codeExecutionResult.setId(id);
+        codeExecutionResult.setBatch(batch);
+        codeExecutionResult.setGraph(result); // 假设 graph 存储执行结果
 
-            return codeExecutionResult;
+        return codeExecutionResult;
     }
 
     private String executeCode(String code) {
@@ -40,5 +42,3 @@ public class GraphController {
         return code;
     }
 }
-
-
